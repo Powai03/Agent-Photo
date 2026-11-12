@@ -1,0 +1,120 @@
+import type { PhotoTrait } from "@/utils/types";
+
+/** [caractère de la photo, bonus ou malus de score, raison affichée]. */
+export type TraitBonus = [trait: PhotoTrait, score: number, reason: string];
+
+/**
+ * Ce qui fait qu'un rendu sublime ou dessert une photo : c'est la connaissance « de photographe »
+ * du moteur de conseil, à ajuster selon les goûts.
+ */
+export const LOOK_TRAIT_BONUSES: Record<string, TraitBonus[]> = {
+  natural: [],
+  "fuji-classic-chrome": [
+    ["greyTones", 1.5, "ses couleurs sourdes donnent de la matière et des nuances aux gris, là où un rendu saturé les laisserait vides"],
+    ["isolatedSubject", 1, "son contraste ferme détache le sujet du fond sans le saturer"],
+    ["softLight", 0.5, "il donne du caractère à une lumière diffuse"],
+    ["graphic", 0.5, "il renforce le côté documentaire des lignes et des textures"],
+    ["vividColors", -1, "il éteindrait des couleurs qui font la force de l'image"],
+  ],
+  "fuji-classic-neg": [
+    ["greyTones", 1, "il colore subtilement les gris : ombres chaudes, hautes lumières froides"],
+    ["isolatedSubject", 0.5, "son contraste marqué fait ressortir le sujet"],
+    ["skin", 0.5, "il garde des tons chair chauds et flatteurs"],
+    ["nightLights", 0.5, "il tient bien les ambiances artificielles"],
+    ["graphic", 0.5, "il donne un ton de snapshot argentique aux scènes de rue"],
+  ],
+  "fuji-velvia": [
+    ["lushGreens", 1.5, "il densifie les verts et leur donne de la profondeur"],
+    ["blueSky", 1.5, "il creuse le bleu du ciel"],
+    ["warmLight", 0.5, "il exalte les couleurs d'une lumière chaude"],
+    ["greyTones", -1.5, "sa saturation n'a rien à amplifier dans une image aussi neutre"],
+    ["skin", -2, "il rougit et durcit les peaux"],
+  ],
+  "fuji-pro-400h": [
+    ["skin", 1, "il rend la peau douce et lumineuse"],
+    ["softLight", 1, "il prolonge la douceur de la lumière en pastel"],
+    ["isolatedSubject", 0.5, "son fond pastel laisse respirer le sujet"],
+    ["lushGreens", 0.5, "il tire les verts vers un menthe très élégant"],
+    ["highContrast", -1, "son rendu aérien s'accorde mal avec des ombres dures"],
+    ["nightLights", -1, "il délave les noirs dont une scène de nuit a besoin"],
+  ],
+  "fuji-acros": [
+    ["greyTones", 1.5, "une photo presque sans couleur gagne à assumer le noir et blanc, avec des gradations de gris très riches"],
+    ["isolatedSubject", 1, "son micro-contraste sculpte le sujet"],
+    ["highContrast", 1, "ombres et lumières deviennent le vrai sujet de l'image"],
+    ["graphic", 1, "il révèle les lignes et les matières"],
+    ["vividColors", -1.5, "la couleur est ici un atout qu'il ferait disparaître"],
+    ["warmLight", -1, "il effacerait la chaleur de la lumière"],
+  ],
+  "kodak-portra-400": [
+    ["skin", 1.5, "c'est la référence pour les tons chair : chauds sans être orangés"],
+    ["warmLight", 1, "ses hautes lumières crémeuses épousent une lumière chaude"],
+    ["softLight", 0.5, "son contraste doux respecte une lumière délicate"],
+    ["highContrast", -0.5, "sa douceur atténue des ombres qui structurent l'image"],
+    ["nightLights", -1, "il manque de densité pour une scène de nuit"],
+  ],
+  "kodak-gold-200": [
+    ["warmLight", 1.5, "il amplifie la chaleur dorée déjà présente"],
+    ["blueSky", 0.5, "il oppose joliment le bleu du ciel aux tons dorés"],
+    ["skin", 0.5, "il réchauffe agréablement les visages"],
+    ["coolLight", -1, "sa chaleur contredit l'ambiance froide de la scène"],
+    ["greyTones", -0.5, "il jaunit des gris qui gagneraient à rester neutres"],
+    ["nightLights", -1, "il vire trop au jaune sous les lumières artificielles"],
+  ],
+  "kodak-ektar-100": [
+    ["vividColors", 1, "il pousse des couleurs déjà franches sans les salir"],
+    ["blueSky", 1, "il rend le ciel éclatant"],
+    ["lushGreens", 0.5, "il donne du relief à la végétation"],
+    ["skin", -1.5, "il rougit les peaux"],
+    ["greyTones", -1, "il a besoin de couleur pour s'exprimer"],
+  ],
+  "kodachrome-64": [
+    ["highContrast", 1, "ses noirs denses assument pleinement les ombres dures"],
+    ["blueSky", 1, "il donne des bleus profonds, presque graphiques"],
+    ["warmLight", 0.5, "il enrichit les rouges et les ocres"],
+    ["vividColors", 0.5, "il densifie les couleurs franches"],
+    ["softLight", -0.5, "il lui faut une lumière franche pour briller"],
+  ],
+  "kodak-tri-x-400": [
+    ["highContrast", 1.5, "contraste dur et grain marqué : l'ombre devient graphique"],
+    ["graphic", 1, "il transforme la scène en jeu de lignes et de masses"],
+    ["greyTones", 1, "il assume l'absence de couleur avec du caractère"],
+    ["nightLights", 0.5, "son grain convient bien à la nuit"],
+    ["vividColors", -1.5, "la couleur est ici un atout qu'il ferait disparaître"],
+    ["lushGreens", -1, "la végétation devient une masse grise sans relief"],
+  ],
+  "cinestill-800t": [
+    ["nightLights", 2, "il est fait pour les lumières artificielles : ombres bleu-vert, lumières orangées"],
+    ["coolLight", 0.5, "il prolonge l'ambiance froide de la scène"],
+    ["blueSky", -1, "en plein jour, sa balance tungstène bleuit toute l'image"],
+    ["lushGreens", -1, "il dénature les verts"],
+    ["warmLight", -0.5, "il refroidit une lumière dont la chaleur fait le charme"],
+  ],
+  "leica-m": [
+    ["isolatedSubject", 1, "micro-contraste et vignettage concentrent le regard sur le sujet"],
+    ["greyTones", 0.5, "il garde des couleurs denses mais sobres"],
+    ["graphic", 0.5, "son piqué met en valeur les matières"],
+    ["highContrast", 0.5, "ses noirs profonds tiennent bien les ombres"],
+  ],
+  "ricoh-gr": [
+    ["graphic", 1.5, "contraste fort et vignettage : un rendu street direct et percutant"],
+    ["highContrast", 1, "il radicalise une lumière déjà dure"],
+    ["blueSky", 0.5, "il assombrit le ciel pour un effet graphique"],
+    ["skin", -1, "son contraste marque les visages"],
+    ["softLight", -0.5, "il brutalise une lumière délicate"],
+  ],
+  hasselblad: [
+    ["isolatedSubject", 1, "transitions douces et couleurs justes : le sujet est rendu avec précision"],
+    ["softLight", 0.5, "il exploite toute la finesse d'une lumière douce"],
+    ["skin", 0.5, "il garde des tons chair neutres et naturels"],
+    ["vividColors", 0.5, "il restitue les couleurs avec justesse, sans surenchère"],
+    ["greyTones", 0.5, "il détaille finement les valeurs proches"],
+  ],
+  "cine-teal-orange": [
+    ["skin", 1, "la peau orangée ressort sur des ombres sarcelle"],
+    ["nightLights", 1, "il donne une ambiance de film aux lumières de la nuit"],
+    ["warmLight", 0.5, "il accentue l'opposition chaud / froid de la scène"],
+    ["lushGreens", -1, "il vire les verts vers le sarcelle"],
+    ["greyTones", -0.5, "sans tons chauds à opposer, il se réduit à un voile bleuté"],
+  ],
+};
