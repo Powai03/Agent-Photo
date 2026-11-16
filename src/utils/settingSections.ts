@@ -155,7 +155,8 @@ export const buildLightroomSections = (settings: LightroomSettings): SettingSect
 };
 
 export const formatSettingValue = (row: SettingRow): string => {
-  const text = row.value.toFixed(row.decimals ?? 0);
+  // Un réglage arrondi à zéro par le bas s'afficherait « -0 ».
+  const text = row.value.toFixed(row.decimals ?? 0).replace(/^-(0(?:\.0+)?)$/, "$1");
   return row.min < 0 && row.value > 0 ? `+${text}` : text;
 };
 
