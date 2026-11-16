@@ -18,30 +18,30 @@ export interface IphoneFilter {
 
 export interface FilterEffect {
   contrast: number;
+  brightness: number;
   saturation: number;
   warmth: number;
   blackPoint: number;
 }
 
-const WARM_SHIFT = 20;
-
 /**
- * Effet estimé de chaque filtre à 100 %, exprimé en unités de curseurs de l'app Photos. Apple ne
- * publie pas ces valeurs : elles servent à retrancher la part du filtre des curseurs conseillés.
+ * Effet de chaque filtre à 100 %, exprimé en unités de curseurs de l'app Photos, pour retrancher
+ * la part du filtre des curseurs conseillés. Valeurs mesurées sur la mire de `calibration/`, sauf
+ * Argenté (vignette et mélange de canaux intégrés, non réductibles à des curseurs) qui reste estimé.
  */
 const FILTER_EFFECTS: Record<IphoneFilterName, FilterEffect> = {
-  Intense: { contrast: 20, saturation: 20, warmth: 0, blackPoint: 0 },
-  "Intense chaud": { contrast: 20, saturation: 20, warmth: WARM_SHIFT, blackPoint: 0 },
-  "Intense froid": { contrast: 20, saturation: 20, warmth: -WARM_SHIFT, blackPoint: 0 },
-  Spectaculaire: { contrast: 30, saturation: -15, warmth: 0, blackPoint: 10 },
-  "Spectaculaire chaud": { contrast: 30, saturation: -15, warmth: WARM_SHIFT, blackPoint: 10 },
-  "Spectaculaire froid": { contrast: 30, saturation: -15, warmth: -WARM_SHIFT, blackPoint: 10 },
-  Mono: { contrast: 0, saturation: -100, warmth: 0, blackPoint: 0 },
-  Argenté: { contrast: 15, saturation: -100, warmth: 0, blackPoint: 0 },
-  Noir: { contrast: 35, saturation: -100, warmth: 0, blackPoint: 15 },
+  Intense: { contrast: -10, brightness: 50, saturation: 30, warmth: -5, blackPoint: 25 },
+  "Intense chaud": { contrast: 10, brightness: 30, saturation: 15, warmth: 30, blackPoint: 10 },
+  "Intense froid": { contrast: 20, brightness: 35, saturation: 10, warmth: -55, blackPoint: 10 },
+  Spectaculaire: { contrast: 20, brightness: -5, saturation: -25, warmth: 0, blackPoint: 5 },
+  "Spectaculaire chaud": { contrast: 25, brightness: -25, saturation: -20, warmth: 30, blackPoint: 5 },
+  "Spectaculaire froid": { contrast: 25, brightness: -5, saturation: -20, warmth: -30, blackPoint: 5 },
+  Mono: { contrast: 20, brightness: 5, saturation: -100, warmth: 0, blackPoint: 0 },
+  Argenté: { contrast: 15, brightness: 0, saturation: -100, warmth: 0, blackPoint: 0 },
+  Noir: { contrast: 55, brightness: 5, saturation: -100, warmth: 0, blackPoint: 0 },
 };
 
-const NO_EFFECT: FilterEffect = { contrast: 0, saturation: 0, warmth: 0, blackPoint: 0 };
+const NO_EFFECT: FilterEffect = { contrast: 0, brightness: 0, saturation: 0, warmth: 0, blackPoint: 0 };
 
 export const computeFilterEffect = (filter: IphoneFilter | null): FilterEffect => {
   if (!filter) return NO_EFFECT;
@@ -49,6 +49,7 @@ export const computeFilterEffect = (filter: IphoneFilter | null): FilterEffect =
   const share = filter.intensity / 100;
   return {
     contrast: effect.contrast * share,
+    brightness: effect.brightness * share,
     saturation: effect.saturation * share,
     warmth: effect.warmth * share,
     blackPoint: effect.blackPoint * share,

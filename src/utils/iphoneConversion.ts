@@ -6,7 +6,15 @@ const WARM_HUE = 40;
 const MAGENTA_HUE = 300;
 const GRADING_WARMTH_GAIN = 60;
 const GRADING_TINT_GAIN = 40;
-const IPHONE_UNITS_PER_STOP = 35;
+// Coefficients calés sur la mire de `calibration/` (curseurs de l'app Photos à +50 et -50).
+const IPHONE_UNITS_PER_STOP = 50;
+const CONTRAST_GAIN = 0.67;
+const SHADOWS_GAIN = 1.1;
+const BLACKS_GAIN = 0.3;
+const FADE_GAIN = 1.15;
+const VIBRANCE_GAIN = 0.75;
+const TEMP_GAIN = 1.6;
+const VIGNETTE_GAIN = 0.7;
 
 const toRadians = (degrees: number): number => (degrees * Math.PI) / 180;
 
@@ -37,23 +45,25 @@ export const convertToIphone = (
     exposure: basic.exposure * IPHONE_UNITS_PER_STOP,
     brilliance: basic.shadows * 0.25 - basic.highlights * 0.15 + basic.clarity * 0.4,
     highlights: basic.highlights * 0.9 + basic.whites * 0.4 + toneCurve.highlights * 0.5,
-    shadows: basic.shadows * 0.9 + toneCurve.shadows * 0.5,
+    shadows: basic.shadows * SHADOWS_GAIN + toneCurve.shadows * 0.5,
     contrast:
-      basic.contrast * 0.9 +
+      basic.contrast * CONTRAST_GAIN +
       (toneCurve.lights - toneCurve.darks) * 0.5 +
       basic.dehaze * 0.4 -
       filterEffect.contrast,
-    brightness: (toneCurve.lights + toneCurve.darks) * 0.4,
-    blackPoint: -basic.blacks * 0.8 - fade - filterEffect.blackPoint,
+    brightness: (toneCurve.lights + toneCurve.darks) * 0.4 - filterEffect.brightness,
+    blackPoint: -basic.blacks * BLACKS_GAIN - fade * FADE_GAIN - filterEffect.blackPoint,
     saturation: (lightroom.isMonochrome ? -100 : basic.saturation) - filterEffect.saturation,
-    vibrance: lightroom.isMonochrome ? 0 : basic.vibrance,
+    vibrance: lightroom.isMonochrome ? 0 : basic.vibrance * VIBRANCE_GAIN,
     warmth:
-      basic.temp + projectGrading(colorGrading, WARM_HUE) * GRADING_WARMTH_GAIN - filterEffect.warmth,
+      basic.temp * TEMP_GAIN +
+      projectGrading(colorGrading, WARM_HUE) * GRADING_WARMTH_GAIN -
+      filterEffect.warmth,
     tint: basic.tint + projectGrading(colorGrading, MAGENTA_HUE) * GRADING_TINT_GAIN,
     sharpness: detail.sharpening * 0.4,
     definition: Math.max(0, basic.clarity * 0.9 + basic.texture * 0.5),
     noiseReduction: detail.noiseReduction,
-    vignette: -effects.vignette * 1.2,
+    vignette: -effects.vignette * VIGNETTE_GAIN,
     tips: look.iphoneNote,
   };
 };
