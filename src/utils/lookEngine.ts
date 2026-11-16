@@ -2,6 +2,7 @@ import { computeBaseCorrection } from "@/utils/baseCorrection";
 import type { BaseCorrection } from "@/utils/baseCorrection";
 import { clampIphone, clampLightroom } from "@/utils/clampSettings";
 import { convertToIphone } from "@/utils/iphoneConversion";
+import { usesPhotographicStyles } from "@/utils/iphoneFilters";
 import { AUTO_LOOK_COUNT, CURVE_KEYS, LOOKS, NATURAL_LOOK_ID, TONE_KEYS, findLook } from "@/utils/looks";
 import type { CurveValues, LookDefinition, MixerShift, ToneValues } from "@/utils/looks";
 import { LOOK_TRAIT_BONUSES } from "@/utils/lookTraitBonuses";
@@ -306,6 +307,7 @@ export const buildAnalysisResult = (
   const analysis = analyzePhoto(features, exif, options.sceneOverride);
   const base = computeBaseCorrection(features, analysis, exif);
   const factor = INTENSITY_FACTORS[options.intensity];
+  const hasPhotographicStyles = usesPhotographicStyles(exif?.camera ?? null);
 
   const naturalLook = findLook(NATURAL_LOOK_ID) ?? LOOKS[0];
   const rankedEvaluations = LOOKS.filter((look) => look.id !== NATURAL_LOOK_ID)
@@ -336,7 +338,7 @@ export const buildAnalysisResult = (
       strengths,
       cautions,
       adaptations: [...adapted.notes, ...(look.style.isMonochrome ? [] : base.notes)],
-      iphone: clampIphone(convertToIphone(lightroom, adapted.fade, look)),
+      iphone: clampIphone(convertToIphone(lightroom, adapted.fade, look, hasPhotographicStyles)),
       lightroom: clampLightroom(lightroom),
     };
   });

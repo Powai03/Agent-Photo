@@ -1,4 +1,5 @@
 import { computeFilterEffect, describeFilter } from "@/utils/iphoneFilters";
+import type { IphoneFilter } from "@/utils/iphoneFilters";
 import type { LookDefinition } from "@/utils/looks";
 import type { GradingWheel, IphoneSettings, LightroomSettings } from "@/utils/types";
 
@@ -30,18 +31,22 @@ const projectGrading = (grading: LightroomSettings["colorGrading"], axisHue: num
 /**
  * Traduit les réglages Lightroom en curseurs de l'app Photos pour viser la même image. La part du
  * rendu déjà apportée par le filtre est retranchée des curseurs : filtre et curseurs s'additionnent.
+ * Sans filtre disponible (styles photographiques), les curseurs portent tout le rendu.
  * Les valeurs sont bornées ensuite par `clampIphone`.
  */
 export const convertToIphone = (
   lightroom: LightroomSettings,
   fade: number,
   look: LookDefinition,
+  usesPhotographicStyles: boolean,
 ): IphoneSettings => {
   const { basic, toneCurve, colorGrading, effects, detail } = lightroom;
-  const filterEffect = computeFilterEffect(look.iphoneFilter);
+  const filter: IphoneFilter | null = usesPhotographicStyles ? null : look.iphoneFilter;
+  const filterEffect = computeFilterEffect(filter);
 
   return {
-    filter: describeFilter(look.iphoneFilter),
+    filter: describeFilter(filter),
+    usesPhotographicStyles,
     exposure: basic.exposure * IPHONE_UNITS_PER_STOP,
     brilliance: basic.shadows * 0.25 - basic.highlights * 0.15 + basic.clarity * 0.4,
     highlights: basic.highlights * 0.9 + basic.whites * 0.4 + toneCurve.highlights * 0.5,

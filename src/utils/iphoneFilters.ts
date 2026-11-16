@@ -56,5 +56,16 @@ export const computeFilterEffect = (filter: IphoneFilter | null): FilterEffect =
   };
 };
 
+const FIRST_MODEL_WITH_STYLES = 16;
+
+/**
+ * Sur les photos prises avec un iPhone 16 ou plus récent, l'app Photos remplace les filtres par
+ * les styles photographiques (Ton, Couleur, Palette) : aucun filtre n'y est proposé.
+ */
+export const usesPhotographicStyles = (camera: string | null): boolean => {
+  const model = /iPhone (\d+)/.exec(camera ?? "");
+  return model !== null && Number(model[1]) >= FIRST_MODEL_WITH_STYLES;
+};
+
 export const describeFilter = (filter: IphoneFilter | null): string =>
   filter ? `${filter.name} à ${filter.intensity}` : "Aucun";

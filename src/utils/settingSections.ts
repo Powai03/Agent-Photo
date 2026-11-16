@@ -32,14 +32,25 @@ const wheelRows = (zone: string, wheel: GradingWheel): SettingRow[] => [
 
 const capitalize = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1);
 
-export const buildIphoneSections = (settings: IphoneSettings): SettingSection[] => [
-  {
+const buildFilterSection = (settings: IphoneSettings): SettingSection => {
+  if (settings.usesPhotographicStyles) {
+    return {
+      title: "Style",
+      rows: [],
+      notes: ["Laisser le style sur Standard : les curseurs portent tout le rendu."],
+    };
+  }
+  return {
     title: "Filtre",
     rows: [],
     notes: isMeaningful(settings.filter)
       ? [settings.filter, "À appliquer en plus des curseurs : leurs valeurs tiennent déjà compte du filtre."]
       : ["Aucun filtre : les curseurs portent tout le rendu."],
-  },
+  };
+};
+
+export const buildIphoneSections = (settings: IphoneSettings): SettingSection[] => [
+  buildFilterSection(settings),
   {
     title: "Ajuster",
     rows: [

@@ -161,6 +161,8 @@ export interface Analysis {
 export interface IphoneSettings {
   /** Filtre de l'app Photos à appliquer en plus des curseurs, ou « Aucun ». */
   filter: string;
+  /** Photo réglée par styles photographiques dans l'app Photos : aucun filtre disponible. */
+  usesPhotographicStyles: boolean;
   exposure: number;
   brilliance: number;
   highlights: number;
